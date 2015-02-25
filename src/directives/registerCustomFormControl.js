@@ -14,7 +14,7 @@
                             recursive(angular.element(parent).parent()[0]);
                         }
                     }
-                }
+                };
                 recursive(el);
                 return form;
             };

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.16.22 - 2015-02-19
+ * dk-angular-auto-validate - v1.17.22 - 2015-02-25
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -1024,7 +1024,7 @@
                             recursive(angular.element(parent).parent()[0]);
                         }
                     }
-                }
+                };
                 recursive(el);
                 return form;
             };
