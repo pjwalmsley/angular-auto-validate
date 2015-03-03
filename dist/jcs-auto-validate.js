@@ -1,5 +1,5 @@
 /*
- * dk-angular-auto-validate - v1.17.22 - 2015-02-25
+ * angular-auto-validate - v1.17.24 - 2015-03-03
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -810,30 +810,11 @@
 (function (angular) {
     'use strict';
 
-
-    angular.module('jcs-autoValidate')
-        .factory('jcs-elementUtils', [
-            function () {
-                var isElementVisible = function (el) {
-                    return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
-                };
-
-                return {
-                    isElementVisible: isElementVisible
-                };
-            }
-        ]);
-
     angular.module('jcs-autoValidate')
         .factory('validationManager', [
             'validator',
-            'jcs-elementUtils',
             function (validator, elementUtils) {
                 var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
-
-                    elementIsVisible = function (el) {
-                        return elementUtils.isElementVisible(el);
-                    },
 
                     /**
                      * Only validate if the element is present, it is visible
@@ -845,7 +826,6 @@
                     shouldValidateElement = function (el) {
                         return el &&
                             el.length > 0 &&
-                            elementIsVisible(el) &&
                             (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
                                 el[0].hasAttribute('register-custom-form-control'));
                     },
@@ -1137,7 +1117,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
+                            if (!('formnovalidate' in attrs) || (frmCtrl ? frmCtrl.disableDynamicValidation === false : false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
