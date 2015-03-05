@@ -66,6 +66,26 @@
                     expect(validator.makeInvalid.called).to.equal(false);
                 });
 
+                it('should return true if the control is not touched and not make the element valid', function () {
+                    var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
+                        result;
+                    modelCtrl.$touched = false;
+                    result = validationManager.validateElement(modelCtrl, el);
+                    expect(result).to.equal(true);
+                    expect(validator.makeValid.called).to.equal(true);
+                    expect(validator.makeInvalid.called).to.equal(false);
+                });
+
+                it('should make the element valid and return true if the control is touched and has no validation requirements', function () {
+                    var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
+                        result;
+                    modelCtrl.$touched = true;
+                    result = validationManager.validateElement(modelCtrl, el);
+                    expect(result).to.equal(true);
+                    expect(validator.makeValid.called).to.equal(true);
+                    expect(validator.makeInvalid.called).to.equal(false);
+                });
+
                 it('should call validator to make element valid when there are $formatters and the form is valid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne"/>');
                     modelCtrl.$formatters.push(angular.noop);
