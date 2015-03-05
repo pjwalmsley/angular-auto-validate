@@ -31,7 +31,7 @@
                      */
                     validateElement = function (modelCtrl, el, forceValidation) {
                         var isValid = true,
-                            needsValidation = modelCtrl.$pristine === false || forceValidation,
+                            needsValidation = !modelCtrl.$pristine || modelCtrl.$touched || forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,

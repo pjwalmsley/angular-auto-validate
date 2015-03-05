@@ -24,6 +24,11 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+                            element.bind('blur', function() {
+                                ngModelCtrl.$setTouched();
+                                validationManager.validateElement(ngModelCtrl, element);
+                            });
+
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.
                             if (supportsNgModelOptions && angular.isFunction(link)) {
