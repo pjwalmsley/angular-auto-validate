@@ -24,7 +24,7 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
-                            element.bind('blur', function() {
+                            element.bind('blur', function () {
                                 ngModelCtrl.$setTouched();
                                 validationManager.validateElement(ngModelCtrl, element);
                             });

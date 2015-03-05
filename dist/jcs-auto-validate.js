@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.17.24 - 2015-03-03
+ * angular-auto-validate - v1.17.26 - 2015-03-05
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -840,7 +840,7 @@
                      */
                     validateElement = function (modelCtrl, el, forceValidation) {
                         var isValid = true,
-                            needsValidation = modelCtrl.$pristine === false || forceValidation,
+                            needsValidation = !modelCtrl.$pristine || modelCtrl.$touched || forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
@@ -1105,6 +1105,11 @@
                                 setValidationState = debounce.debounce(function () {
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
+
+                            element.bind('blur', function () {
+                                ngModelCtrl.$setTouched();
+                                validationManager.validateElement(ngModelCtrl, element);
+                            });
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.
