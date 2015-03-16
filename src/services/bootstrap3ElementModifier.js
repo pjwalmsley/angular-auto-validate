@@ -24,8 +24,8 @@
                                 } else {
                                     recursive(angular.element(parent).parent());
                                 }
-                             }
-                         }
+                            }
+                        };
                         recursive(el);
                         return retuenEl;
                     },
