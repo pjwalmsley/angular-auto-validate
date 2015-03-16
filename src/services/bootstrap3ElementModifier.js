@@ -16,17 +16,17 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl,
-                            parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
-                            if (parent !== undefined && parent.hasClass(klass)) {
-                                retuenEl = parent;
-                                break;
-                            } else if (parent !== undefined) {
-                                parent = parent.parent();
+                        var retuenEl;
+                        var recursive = function (parent) {
+                            if (parent.length > 0) {
+                                if (parent.hasClass(klass)) {
+                                    retuenEl = parent;
+                                } else {
+                                    recursive(angular.element(parent).parent());
+                                }
                             }
-                        }
-
+                        };
+                        recursive(el);
                         return retuenEl;
                     },
 
