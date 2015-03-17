@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.4 - 2015-03-16
+ * angular-auto-validate - v1.18.4 - 2015-03-17
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -317,19 +317,22 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl,
-                            parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
-                            if (parent !== undefined && parent.hasClass(klass)) {
-                                retuenEl = parent;
-                                break;
-                            } else if (parent !== undefined) {
-                                parent = parent.parent();
+                        var retuenEl;
+                        var recursive = function (parent) {
+                            if (parent.length > 0) {
+                                if (parent.hasClass(klass)) {
+                                    retuenEl = parent;
+                                } else {
+                                    recursive(angular.element(parent).parent());
+                                }
+                            } else {
+                                console.log('no class ' + klass + 'found.');
                             }
-                        }
-
+                        };
+                        recursive(el);
                         return retuenEl;
                     },
+
 
                     findWithClassElementDesc = function (el, klass) {
                         var child;
@@ -1098,16 +1101,18 @@
     angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
         function () {
             var findParentForm = function (el) {
-                var parent = el;
-                for (var i = 0; i <= 50; i += 1) {
-                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
-                        break;
-                    } else if (parent !== undefined) {
-                        parent = angular.element(parent).parent()[0];
+                var form;
+                var recursive = function (parent) {
+                    if (parent !== undefined) {
+                        if (parent.nodeName.toLowerCase() === 'form') {
+                            form = parent;
+                        } else {
+                            recursive(angular.element(parent).parent()[0]);
+                        }
                     }
-                }
-
-                return parent;
+                };
+                recursive(el);
+                return form;
             };
 
             return {
