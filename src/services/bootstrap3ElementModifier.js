@@ -24,6 +24,8 @@
                                 } else {
                                     recursive(angular.element(parent).parent());
                                 }
+                            } else {
+                                console.log('no class ' + klass + 'found.');
                             }
                         };
                         recursive(el);
