@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.5 - 2015-03-18
+ * angular-auto-validate - v1.18.5 - 2015-03-20
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -881,7 +881,7 @@
                     validateElement = function (modelCtrl, el, options) {
                         var isValid = true,
                             frmOptions = options || getFormOptions(el),
-                            needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
+                            needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation || frmOptions.touched,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
@@ -1185,10 +1185,31 @@
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
-                                setValidationState = debounce.debounce(function () {
+                                setValidationState = debounce.debounce(function (touched) {
                                     var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
+                                    if (touched) {
+                                        if (!validateOptions) {
+                                            validateOptions = {};
+                                        }
+                                        validateOptions.touched = touched;
+                                    }
                                     validationManager.validateElement(ngModelCtrl, element, validateOptions);
                                 }, 100);
+
+                            element.bind('blur', function () {
+                                if (ngModelOptions.updateOn.indexOf('blur') > -1) {
+                                    var debounceTime;
+                                    if (ngModelOptions.debounce) {
+                                        debounceTime = ngModelOptions.debounce.blur;
+                                        debounceTime = debounceTime ? debounceTime : 0;
+                                    }
+                                    debounce.debounce(function () {
+                                        var touched = true;
+                                        setValidationState(touched);
+                                    }, debounceTime);
+
+                                }
+                            });
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.
