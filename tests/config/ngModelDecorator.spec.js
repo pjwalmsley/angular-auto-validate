@@ -74,7 +74,17 @@
                 //
                 //                expect(debounceStub.called).to.equal(true);
             });
+//////
 
+            it('should called debounced method when $setValidity invoked if ngModelOptions is not defined', function () {
+                compileElement('<input ng-model="model" />');
+                var ctrl = element.controller('ngModel');
+                ctrl.$setValidity('error', false);
+
+                expect(debounceStub.called).to.equal(true);
+            });
+
+//////
             it('should called debounced method when $setValidity invoked if ngModelOptions is not defined', function () {
                 compileElement('<input ng-model="model" />');
                 var ctrl = element.controller('ngModel');

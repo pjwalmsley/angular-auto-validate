@@ -20,10 +20,20 @@
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
-                                setValidationState = debounce.debounce(function () {
+                                setValidationState = debounce.debounce(function (touched) {
                                     var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
+                                    if (touched) {
+                                        validateOptions ? validateOptions.touched = touched;
+                                    }
                                     validationManager.validateElement(ngModelCtrl, element, validateOptions);
                                 }, 100);
+
+                            element.bind('blur', function () {
+                                if (ngModelOptions.updateOn.indexOf("blur") > -1) {
+                                    touched = true;
+                                    setValidationState(touched);
+                                }
+                            });
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.

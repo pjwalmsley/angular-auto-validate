@@ -66,7 +66,7 @@
                     validateElement = function (modelCtrl, el, options) {
                         var isValid = true,
                             frmOptions = options || getFormOptions(el),
-                            needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
+                            needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation || frmOptions.touched,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
