@@ -17,18 +17,18 @@
                     },
                     findWithClassElementAsc = function (el, klass) {
                         var retuenEl;
-                        var recursive = function (parent) {
+                        var recursiveCheckClassPrescenceOn = function (parent) {
                             if (parent.length > 0) {
                                 if (parent.hasClass(klass)) {
                                     retuenEl = parent;
                                 } else {
-                                    recursive(angular.element(parent).parent());
+                                    recursiveCheckClassPrescenceOn(angular.element(parent).parent());
                                 }
                             } else {
-                                console.log('no class ' + klass + 'found.');
+                                $log('Angular-auto-validate: no element with class ' + klass + 'found ascending from element: ' + el);
                             }
                         };
-                        recursive(el);
+                        recursiveCheckClassPrescenceOn(el);
                         return retuenEl;
                     },
 
