@@ -25,7 +25,8 @@
                                     recursiveCheckClassPrescenceOn(angular.element(parent).parent());
                                 }
                             } else {
-                                $log('Angular-auto-validate: no element with class ' + klass + 'found ascending from element: ' + el);
+                                $log.error('Angular-auto-validate: no element with class ' + klass + 'found ascending from element:');
+                                $log.error(el);
                             }
                         };
                         recursiveCheckClassPrescenceOn(el);
