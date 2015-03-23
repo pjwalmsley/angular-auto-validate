@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.4 - 2015-03-17
+ * angular-auto-validate - v1.18.5 - 2015-03-18
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -317,22 +317,19 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl;
-                        var recursive = function (parent) {
-                            if (parent.length > 0) {
-                                if (parent.hasClass(klass)) {
-                                    retuenEl = parent;
-                                } else {
-                                    recursive(angular.element(parent).parent());
-                                }
-                            } else {
-                                console.log('no class ' + klass + 'found.');
+                        var retuenEl,
+                            parent = el;
+                        for (var i = 0; i <= 3; i += 1) {
+                            if (parent !== undefined && parent.hasClass(klass)) {
+                                retuenEl = parent;
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
                             }
-                        };
-                        recursive(el);
+                        }
+
                         return retuenEl;
                     },
-
 
                     findWithClassElementDesc = function (el, klass) {
                         var child;
@@ -953,16 +950,21 @@
                         var frmValid = true,
                             frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
                             processElement = function (ctrlElement, force, formOptions) {
-                                var controller, isValid;
+                                var controller, isValid, ctrlFormOptions;
+
                                 ctrlElement = angular.element(ctrlElement);
                                 controller = ctrlElement.controller('ngModel');
 
-                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement, frmCtrl.autoValidateFormOptions))) {
+                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement, formOptions))) {
                                     if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                         // we probably have a sub form
                                         validateForm(ctrlElement);
                                     } else {
-                                        isValid = validateElement(controller, ctrlElement, getFormOptions(ctrlElement));
+                                        // we need to get the options for the element rather than use the passed in as the
+                                        // element could be an ng-form and have different options to the parent form.
+                                        ctrlFormOptions = getFormOptions(ctrlElement);
+                                        ctrlFormOptions.forceValidation = force;
+                                        isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
                                         frmValid = frmValid && isValid;
                                     }
                                 }
@@ -980,7 +982,7 @@
                         // IE8 holds the child controls collection in the all property
                         // Firefox in the elements and chrome as a child iterator
                         angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
-                            processElement(ctrlElement, false, clonedOptions);
+                            processElement(ctrlElement, true, clonedOptions);
                         });
 
                         // If you have a custom form control that should be validated i.e.
@@ -1101,18 +1103,16 @@
     angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
         function () {
             var findParentForm = function (el) {
-                var form;
-                var recursive = function (parent) {
-                    if (parent !== undefined) {
-                        if (parent.nodeName.toLowerCase() === 'form') {
-                            form = parent;
-                        } else {
-                            recursive(angular.element(parent).parent()[0]);
-                        }
+                var parent = el;
+                for (var i = 0; i <= 50; i += 1) {
+                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
+                        break;
+                    } else if (parent !== undefined) {
+                        parent = angular.element(parent).parent()[0];
                     }
-                };
-                recursive(el);
-                return form;
+                }
+
+                return parent;
             };
 
             return {
