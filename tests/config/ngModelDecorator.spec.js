@@ -76,12 +76,32 @@
             });
             //////
 
-            it('should called debounced method when $setValidity invoked if ngModelOptions is not defined', function () {
-                compileElement('<input ng-model="model" />');
-                var ctrl = element.controller('ngModel');
-                ctrl.$setValidity('error', false);
+            // it('handles the lack of model options gracefully')
+            // if('waits for the specified debouce period bofore rendering validations')
 
-                expect(debounceStub.called).to.equal(true);
+            // it('should called debounced method when the blur event occurs if ngModelOptions.updateOn contains blur', function () {
+            //     compileElement('<input ng-model="model" />');
+            //     var ctrl = element.controller('ngModel');
+            //     ctrl.$setValidity('error', true);
+            //     // $setValidity will trigger one call. additional calls from blur event.
+            //     expect(debounceStub.calledThrice).to.equal(true);
+            // });
+
+            it('should not call debounced method when the blur event occurs if ngModelOptions.updateOn does not contain blur', function () {
+                $rootScope.opts = {
+                    updateOn: 'blur'
+                };
+                compileElement('<input ng-model-options="opts" required ng-model="model" />');
+                // var ctrl = element.controller('ngModel');
+                // ctrl.$setValidity('error', true);
+                // will trigger two calls regaurdless. no call from blur event.
+                expect(debounceStub.callCount).to.equal(2);
+                var setValidationStateStub = sandbox.stub();
+                sandbox.stub(debounce, 'debounce').returns(setValidationStateStub);
+                console.log(setValidationStateStub.callCount);
+                // element.trigger('blur');
+                console.log(debounceStub.callCount);
+
             });
 
             //////

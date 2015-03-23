@@ -1186,6 +1186,7 @@
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function (touched) {
+                                    console.log('debounce');
                                     var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
                                     if (touched) {
                                         if (!validateOptions) {
@@ -1197,17 +1198,20 @@
                                 }, 100);
 
                             element.bind('blur', function () {
-                                if (ngModelOptions.updateOn.indexOf('blur') > -1) {
-                                    var debounceTime;
-                                    if (ngModelOptions.debounce) {
-                                        debounceTime = ngModelOptions.debounce.blur;
-                                        debounceTime = debounceTime ? debounceTime : 0;
+                                console.log('blur');
+                                if (ngModelOptions) {
+                                    if (ngModelOptions.updateOn.indexOf('blur') > -1) {
+                                        console.log('gonna update');
+                                        var debounceTime;
+                                        if (ngModelOptions.debounce) {
+                                            debounceTime = ngModelOptions.debounce.blur;
+                                            debounceTime = debounceTime ? debounceTime : 0;
+                                        }
+                                        debounce.debounce(function () {
+                                            var touched = true;
+                                            setValidationState(touched);
+                                        }, debounceTime);
                                     }
-                                    debounce.debounce(function () {
-                                        var touched = true;
-                                        setValidationState(touched);
-                                    }, debounceTime);
-
                                 }
                             });
 
